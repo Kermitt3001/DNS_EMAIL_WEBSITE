@@ -330,9 +330,11 @@ sudo apt install opendkim opendkim-tools
 
 * Sample TXT record:
 ```
-selector201._domainkey IN TXT ("v=DKIM1; k=rsa; p=[PUBLIC_KEY]"; t=s; s=email) ''
+selector201._domainkey IN TXT ("v=DKIM1; k=rsa; p=[PUBLIC_KEY]"; t=s; s=email)
+```
 
 * DMARC:
+
 ```
 _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@<YOUR_DOMAIN>" 
 ```
