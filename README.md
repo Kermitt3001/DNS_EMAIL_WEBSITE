@@ -22,11 +22,11 @@
 
 	3.1 [File named.conf.local](#31-file-namedconflocal)
 
-	3.2 [Zone file db](#32-file-zone-db)
+	3.2 [Zone file db](#32-zone-file-db)
 
 4. [Domain Configuration in Porkbun](#4-domain-configuration-in-porkbun)
 
-	4.1 [Domain Registration](#41-register-domains)
+	4.1 [Domain Registration](#41-domain-registration)
 
 	4.2 [Glue Records](#42-glue-records)
 
@@ -34,57 +34,57 @@
 
 5. [Testing and Implementing DNSSEC](#5-testing-and-implementing-dnssec)
 
-	5.1 [Generating KSK and ZSK keys](#51-generate-key)
+	5.1 [Generating KSK and ZSK keys](#51-generating-KSK-and-ZSK-keys)
 
-	5.2 [Zone Signing and RRSIG Generation](#52-signing-zone)
+	5.2 [Zone Signing and RRSIG Generation](#52-zone-signing-and-RRSIG-generation)
 
-	5.3 [Reconfiguring BIND9 under DNSSEC](#53-bind-i-dnssec)
+	5.3 [Reconfiguring BIND9 under DNSSEC](#53-reconfiguring-bind9-under-dnssec)
 
-	5.4 [Entering DS record in Porkbun](#54-record-ds-w-porkbun)
+	5.4 [Entering DS record in Porkbun](#54-entering-DS-record-in-porkbun)
 
-6. [Installing a mail server](#6-install-mail-server)
+6. [Installing a mail server](#6-installing-a-mail-server)
 
-	6.1 [Postfix-installation and configuration](#61-postfix-installation)
+	6.1 [Postfix installation and configuration](#61-postfix-installation-and-configuration)
 
-	6.2 [Creating Maildir Directories](#62-maildir)
+	6.2 [Creating Maildir Directories](#62-creating-maildir-directories)
 
-	6.3 [Dovecot installation](#63-installation-dovecot)
+	6.3 [Dovecot installation](#63-dovecot-installation)
 
 7. [Testing, Security, and Tools](#7-testing-security-and-tools)
 
-	7.1 [Email and IMAP performance tests](#71-tests-mail)
+	7.1 [Email and IMAP performance tests](#71-email-and-imap-performance-tests)
 
-	7.2 [SPF Diagnostics, DKIM, DMARC](#72-diagnostics-spf-dkim-dmarc)
+	7.2 [SPF Diagnostics, DKIM, DMARC](#72-spf-diagnostics-dkim-dmarc)
 
-	7.3 [TLS, certificates, Apple Mail](#73-tls-apple-mail)
+	7.3 [TLS, certificates, Apple Mail](#73-tls-certificates-apple-mail)
 
-	7.4 [Typical Problems and Troubleshooting](#74-problems-and-troubleshooting)
+	7.4 [Commom Problems and Troubleshooting](#74-common-problems-and-troubleshooting)
 
-	7.5 [Backup and monitoring](#75-backup-i-monitoring)
+	7.5 [Backup and monitoring](#75-backup-and-monitoring)
 
-	7.6 [Send by relayhost (Gmail/SendGrid)](#76-send-by-relayhost)
+	7.6 [Sending mail from VPS with blocked port 25](#76-Sending-mail-from-VPS-with-blocked-port-25)
 
 	7.7 [Errors and Solutions](#77-errors-and-solutions)
 
-	7.8 [Mail client settings](#78-settings-customers-email)
+	7.8 [Mail client settings](#78-mail-client-settings)
 
 8. [Project Status and Next Steps](#8-project-status-and-next-steps)
 
 	8.1 [What Works](#81-what-works)
 
-	8.2 [What's Next](#82-what's Next)
+	8.2 [What's Next](#82-whats-next)
 
 9. [Website with WordPress](#9-website-with-wordpress)
 
-	9.1 [Apache installation and VirtualHost configuration](#91-install-apache)
+	9.1 [Apache installation and VirtualHost configuration](#91-apache-installation-and-virtualhost-configuration)
 
-	9.2 [Let's Encrypt SSL Certificate Installation](#92-install-ssl)
+	9.2 [Let's Encrypt SSL Certificate Installation](#92-lets-encrypt-ssl-certificate-installation)
 
-	9.3 [WordPress installation and database](#93-wordpress-i-mariadb)
+	9.3 [WordPress installation and database](#93-wordpress-installation-and-database)
 
-	9.4 [Themes & Plugins - Portfolio & Resume](#94-motifs-and-plugins)
+	9.4 [Themes & Plugins - Portfolio & Resume](#94-themes-&-plugins-porfolio-&-resume)
 
-	9.5 [WordPress security](#95-security-wordpress)
+	9.5 [WordPress security](#95-wordpress-security)
 
 
 
@@ -238,7 +238,7 @@ ns2.<YOUR_DOMAIN>
 
 ## 5 Testing and implementing DNSSEC 
 
-### 5.1 Generating keys
+### 5.1 Generating KSK and ZSK keys
 
 ```bash
 cd /etc/bind/keys
@@ -247,7 +247,7 @@ sudo dnssec-keygen -f KSK -a RSASHA256 -b 2048 -n ZONE <YOUR_DOMAIN>
 ```
 
 
-### 5.2 Signature zone 
+### 5.2 Zone Signing and RRSIG Generation
 
 
 ```bash
@@ -256,7 +256,7 @@ sudo dnssec-signzone -A -3 $(head -c 1000 /dev/urandom | sha1sum | cut -c1-16) \
 ```
 
 
-### 5.3 Reconfigure BIND9 
+### 5.3 Reconfiguring BIND9 under DNSSEC
 
 In the 'named.conf.local' file:
 
@@ -268,7 +268,7 @@ zone "<YOUR_DOMAIN>" {
 };
 ```
 
-### 5.4 Entering a DS record in Porkbun
+### 5.4 Entering DS record in Porkbun
 
 * Used 'dig DNSKEY <YOUR_DOMAIN>' to obtain KSK.
 * Calculated 'ds-record' using 'dnssec-dsfromkey'.
@@ -277,9 +277,9 @@ zone "<YOUR_DOMAIN>" {
 
 --
 
-## 6. installation of mail server
+## 6. Installing a mail server
 
-### 6.1 Postfix - installation and configuration
+### 6.1 Postfix installation and configuration
 
 ```bash
 sudo apt install postfix 
@@ -360,7 +360,7 @@ openssl s_client -connect mail.<YOUR_DOMAIN>:993
 ```
 
 
-### 7.2 SPF, DKIM, DMARC diagnostics
+### 7.2 SPF Diagnostics, DKIM, DMARC
 
 * SPF check:
 ```bash
@@ -436,7 +436,8 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@<YOUR_DOMAIN>"
 * Logs: 'journalctl -u postfix -n 50', 'journalctl -u dovecot -n 50'
 * External tests: [mxtoolbox.com](https://mxtoolbox.com), [intodns.com](https://intodns.com), [SSL Labs](https://www.ssllabs.com/ssltest/)
 
-### 7.6 Sending mail from VPS with blocked port 25 (relayhost, Gmail/SendGrid) 
+### 7.6 Sending mail from VPS with blocked port 25 
+(relayhost, Gmail/SendGrid) 
 
 #### Problem:
 
@@ -532,7 +533,7 @@ smtp_tls_CAfile= /etc/ssl/certs/ca-certificates.crt
 
 --
 
-## 7.8 Mail client settings (Apple Mail/Thunderbird, etc.).
+## 7.8 Mail client settings
 
 * **IMAP (mail pickup):**.
 
@@ -591,7 +592,7 @@ Apple Mail connects to your server, and it forwards to SendGrid (relayhost).
 
 ## 9. Website with WordPress
 
-### 9.1 Installing Apache and configuring VirtualHost
+### 9.1 Apache installation and VirtualHost configuration
 
 Apache2 server was installed along with the required UFW profiles:
 
@@ -636,7 +637,7 @@ apache2'.
 
 
 
-### 9.2 Installing Let's Encrypt SSL certificate Install certbot and plugin for Apache: 
+### 9.2 Let's Encrypt SSL Certificate Installation 
 
 ```bash
 sudo apt install certbot python3-certbot-apache -y 
@@ -697,7 +698,7 @@ define( 'DB_USER', 'wpuser' );
 define( 'DB_PASSWORD', 'password123' );
 define( 'DB_HOST', 'localhost' );
 ```
-### 9.4 Themes and plugins - portfolio and resume
+### 9.4 Themes & plugins - portfolio & resume
 
 The **Astra** theme and plugins were installed:
 * Elementor - page builder.
@@ -707,7 +708,7 @@ The **Astra** theme and plugins were installed:
 
 Also installed **Starter Templates** and imported a ready-made resume/portfolio template. 
 
-### 9.5 WordPress security features
+### 9.5 WordPress security
 
 Added an entry to 'wp-config.php':
 
