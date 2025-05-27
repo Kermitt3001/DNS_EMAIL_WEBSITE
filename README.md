@@ -56,7 +56,7 @@ Contents
 
 A VPS from Hetzner with the following features was selected:
 
-* x86 architecture
+* x86 architecture
 * CPU type: Shared vCPU
 * Operating system: Debian 12
 * Panel: none - manual configuration via terminal 
@@ -76,15 +76,15 @@ creating a VPS instance:
 * The public key has been added to the VPS instance
 * The first login was through:
 
-'''bash
-ssh root@<YOUR_IP> '''
+```bash
+ssh root@<YOUR_IP> ```
 
 * A new user '<your_USER>' was created, added to the 'sudo' group, and the public key was copied to it:
 
-'''bash
+```bash
 adduser <your_USER>
 usermod -aG sudo <your_USER>
-rsync --archive --chown=<your_USER>:<your_USER> ~/.ssh /home/<your_USER> '''
+rsync --archive --chown=<your_USER>:<your_USER> ~/.ssh /home/<your_USER> ```
 
 
 --
@@ -96,15 +96,15 @@ rsync --archive --chown=<your_USER>:<your_USER> ~/.ssh /home/<your_USER> '''
 
 Installing packages
 
-'''bash
-sudo apt update && sudo apt install bind9 bind9utils bind9-doc dnsutils -y ''''
+```bash
+sudo apt update && sudo apt install bind9 bind9utils bind9-doc dnsutils -y ```'
 
 
 ###2.2 BIND9 file configuration:
 
 File: '/etc/bind/named.conf.options' 
 
-'''conf
+```conf
 options {
 	directory "/var/cache/bind";
 	recursion no;
@@ -115,7 +115,7 @@ options {
 	listen-on { any;};
 	listen-on-v6 { none; };
 };
-'''
+```
 
 --
 
@@ -123,13 +123,13 @@ options {
 
 ### 3.1 File: '/etc/bind/named.conf.local' 
 
-'''conf
+```conf
 zone "noinput.dev" {
 	type master;
 	file "/etc/bind/zones/db.noinput.dev";
 	allowtransfer { none; };
 };
-'''
+```
 
 
 ### 3.2 File: '/etc/bind/zones/db.noinput.dev'
@@ -182,10 +182,10 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:postmaster@<YOUR_DOMAIN>"
 
 Changing domain nameservers:
 
-'''
+```
 ns1.noinput.dev
 ns2.noinput.dev 
-'''
+```
 
 --
 
@@ -234,14 +234,14 @@ zone "noinput.dev" {
 
 ### 6.1 Postfix - installation and configuration
 
-'''bash
+```bash
 sudo apt install postfix 
-'''
+```
 
 Select: 'Internet Site' 
 File '/etc/postfix/main.cf':
 
-'''bash
+```bash
 home_mailbox = Maildir/
 smtpd_tls_cert_file=/etc/ssl/certs/ssl-certsnakeoil.pem 
 smtpd_tls_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
@@ -256,24 +256,24 @@ mydestination= $myhostname, localhost.$mydomain, localhost, $mydomain
 mynetworks = 127.0.0.0/8 [::1]/128
 inet_interfaces = all
 inet_protocols= ipv4 
-'''
+```
 
 
 
 ### 6.2 Creating Maildir directories
 
-'''bash
+```bash
 sudo mkdir -p /home/<your_USER>/Maildir/{cur,new,tmp}
 sudo chown -R <your_USER>:<your_USER> /home/<your_USER>/Maildir
-'''
+```
 
 
 
 ### 6.3 Dovecot installation
 
-'''bash
+```bash
 sudo apt install dovecot-imapd dovecot-pop3d
-'''
+```
 
 
 --
@@ -284,82 +284,82 @@ sudo apt install dovecot-imapd dovecot-pop3d
 
 * Checking the existence of the Maildir directory:
 
-'''bash
+```bash
 sudo -u [USER] maildirmake /home/[USER]/Maildir
 sudo chown -R [USER]:[USER] /home/[USER]/Maildir 
-'''
+```
 
 
 * Shipping Test:
 
-'''bash
+```bash
 echo "Test mail"| mail -s "Test message" [USER] sudo ls -l
 /home/[USER]/Maildir/new
-'''
+```
 
 
 * Dovecot Login Test:
 
-'''bash
+```bash
 sudo doveadm auth test [UKRYTO_USER]
-'''
+```
 
 
 * IMAP connection test (openssl):
 
-'''bash
+```bash
 openssl s_client -connect mail.<YOUR_DOMAIN>:993 
 # IMAP: a LOGIN [USER] [PASSWORD] 
-'''
+```
 
 
 ### 7.2 SPF, DKIM, DMARC diagnostics
 
 * SPF check:
-'''bash
+```bash
 dig TXT noinput.dev +short
 # Or https://mxtoolbox.com/spf.aspx
-'''
+```
 
 * DKIM (opendkim) configuration:
-'''bash
+```bash
 sudo apt install opendkim opendkim-tools
-'''
+```
 
 * DKIM keys: '/etc/opendkim/keys/noinput.dev/'
 
 * Sample TXT record:
-'''
+```
 selector201._domainkey IN TXT ("v=DKIM1; k=rsa; p=[PUBLIC_KEY]"; t=s; s=email) ''
 
 * DMARC:
-'''
+```
 _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@noinput.dev" 
-'''
+```
 
 
 ### 7.3 TLS, certificates, Apple Mail
 
 * Installing Let's Encrypt:
 
-  '''bash
+  ```bash
   sudo apt install certbot
   sudo certbot certonly --standalone -d mail.noinput.dev 
-  '''
+  ```
 
 * Dovecot configuration with full chain:
 
-  '''conf
+  ```conf
   ssl_cert= </etc/letsencrypt/live/mail.<YOUR_DOMAIN>/fullchain.pem
   ssl_key = </etc/letsencrypt/live/mail.noinput.dev/privkey.pem
-  '''
+  ```
 
 * Certificate test:
 
 
-  '''bash
+  ```bash
   openssl s_client -showcerts -connect mail.<YOUR_DOMAIN>:993 </dev/null| sed -n '/BEGIN CERTIFICATE/,/END CERTIFICATE/p'
-  '''
+  ```
 
 * Apple Mail problems:
 
@@ -378,9 +378,9 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@noinput.dev"
 
 * Configuration backup (cron/manual example):
 
-  '''bash
+  ```bash
   tar czf /root/backup/$(date +%F)_bind.tgz /etc/bind /etc/dovecot /etc/postfix
-  '''
+  ```
 
 * Monitoring and testing:
 
@@ -404,11 +404,11 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@noinput.dev"
 
   * Add the CNAME records shown by SendGrid to the zone file (db.<YOUR_DOMAIN>), remembering the period at the end:
 
-    '''dns
+    ```dns
     em<YOUR_NUMBERS> IN CNAME <NO_SENDGRID>.wl005.sendgrid.net. 
     s1._domainkey IN CNAME s1.domainkey.<NO_SENDGRID>.wl005.sendgrid.net.
     s2._domainkey IN CNAME s2.domainkey.<NO_SENDGRID>.wl005.sendgrid.net.
-'''
+```
 
 * Re-sign the zone if you have DNSSEC.
 * Do a BIND9 reload.
@@ -416,43 +416,43 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@noinput.dev"
 * **File '/etc/postfix/main.cf' - minimum relayhost configuration:**.
 
 
-'''conf
+```conf
 relayhost= [smtp.sendgrid.net]:587
 smtp_sasl_auth_enable = yes
 smtp_sasl_password_maps= hash:/etc/postfix/sasl_passwd
 smtp_sasl_security_options = noanonymous smtp_tls_security_level = encrypt
 smtp_tls_CAfile= /etc/ssl/certs/ca-certificates.crt 
-'''
+```
 
 
 * ** File '/etc/postfix/sasl_passwd':**.
 
-  '''
+  ```
   [smtp.sendgrid.net]:587 apikey:<YOUR_SENDGRID_API_KEY>
-  '''
+  ```
 
 * 'apikey' - literally that word!
 * 'YOUR_SENDGRID_API_KEY' - your key generated in SendGrid.
 
 * **Secure file and update maps:**.
 
-  '''bash
+  ```bash
   sudo postmap /etc/postfix/sasl_passwd
   sudo chmod 600 /etc/postfix/sasl_passwd /etc/postfix/sasl_passwd.db 
-  '''
+  ```
 
 
 * Postfix's **Restart:**.
   
-  '''bash
+  ```bash
   sudo systemctl restart postfix
-  '''
+  ```
 
 
 * ** Shipping test:**.
-  '''bash
+  ```bash
   echo "Test by SendGrid SMTP"| mail -s "Test SendGrid" <YOUR_EMAIL> 
-  '''
+  ```
 
 
 * **Debugging Shipping:**.
@@ -546,23 +546,23 @@ Apple Mail connects to your server, and it forwards to SendGrid (relayhost).
 
 Apache2 server was installed along with the required UFW profiles:
 
-'''bash
+```bash
 sudo apt update
 sudo apt install apache2 -y 
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
 sudo ufw reload
-'''
+```
 
 
 Checked the operation of Apache via the server IP and configured a new site via VirtualHost. Creating a directory structure:
 
 
-'''bash
+```bash
 sudo mkdir -p /var/www/<YOUR_DOMAIN>
 sudo echo '<h1>[YOUR_DOMAIN] works</h1>'> /var/www/[YOUR_DOMAIN]/index.html sudo chown -R
 www-data:www-data /var/www/<YOUR_DOMAIN>
-'''
+```
 
 
 Site configuration file:
@@ -589,15 +589,15 @@ apache2'.
 
 ### 9.2 Installing Let's Encrypt SSL certificate Install certbot and plugin for Apache: 
 
-'''bash
+```bash
 sudo apt install certbot python3-certbot-apache -y 
-'''
+```
 
 Certificate configuration has been started:
 
-'''bash
+```bash
 sudo certbot --apache -d <YOUR_DOMAIN> -d www.<YOUR_DOMAIN>
-'''
+```
 
 Certbot automatically set up HTTPS, enabled redirection from HTTP and saved the certificates in '/etc/letsencrypt/live/<YOUR_DOMAIN>/'.
 
@@ -606,48 +606,48 @@ Certbot automatically set up HTTPS, enabled redirection from HTTP and saved the 
 
 The required packages have been installed:
 
-'''bash
+```bash
 sudo apt install php php-mysql php-curl php-gd php-mbstring php-xml php-zip php-cli libapache2-mod-php
 unzip mariadb-server -y
-'''
+```
 
 
 Made sure MariaDB was working:
 
 
-'''bash
+```bash
 sudo systemctl enable mariadb sudo
 systemctl start mariadb sudo
-mysql_secure_installation'''
+mysql_secure_installation```
 
 
 MariaDB and PHP with the necessary extensions were installed. A database and user were created: 
 
-'''sql
+```sql
 CREATE DATABASE wordpress;
 CREATE USER 'wpuser'@'localhost' IDENTIFIED BY 'haslo123'; GRANT ALL
 PRIVILEGES ON wordpress.* TO 'wpuser'@'localhost'; FLUSH PRIVILEGES;
-'''
+```
 
 
 WordPress was downloaded and unpacked:
 
-'''bash cd
+```bash cd
 /tmp
 curl -O https://wordpress.org/latest.zip unzip
 latest.zip
 sudo mv wordpress/* /var/www/noinput.dev/
-'''
+```
 
 
 Permissions have been set and 'wp-config.php' has been copied, with database and flip data. Example of settings:
 
-'''php
+```php
 define( 'DB_NAME', 'wordpress' );
 define( 'DB_USER', 'wpuser' );
 define( 'DB_PASSWORD', 'password123' );
 define( 'DB_HOST', 'localhost' );
-'''
+```
 ### 9.4 Themes and plugins - portfolio and resume
 
 The **Astra** theme and plugins were installed:
@@ -662,8 +662,8 @@ Also installed **Starter Templates** and imported a ready-made resume/portfolio 
 
 Added an entry to 'wp-config.php':
 
-'''php define('DISALLOW_FILE_EDIT'', true);
-'''
+```php define('DISALLOW_FILE_EDIT'', true);
+```
 
 File and directory permissions have been changed:
 
@@ -676,9 +676,9 @@ A security plugin has been installed, and 'fail2ban' has been enabled at the ser
 restricted by security plugins. Added automatic backups and tests of certificate performance by 'certbot renew --dry-run'.
 
 Example of manual backups:
-'''bash
+```bash
 tar czf /root/backup/wordpress_$(date +%F).tar.gz /var/www/noinput.dev
-'''
+```
 
 
 >>>>>>> e00a919 (My home lab project with configuration of DNS, Email and my own website)
