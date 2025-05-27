@@ -1,50 +1,91 @@
-<<<<<<< HEAD
-# DNS_EMAIL_WEBSITE
-=======
-# Project: Custom DNS Server on VPS with BIND9 for domain <YOUR_DOMAIN> ## Table of
-Contents
 
-1. [VPS and operating system selection](#1-select-vps-and-operating-system)
+# DNS EMAIL WEBSITE ON MY OWN VPS
+=======
+# Project: Custom DNS Server on VPS with BIND9 for domain <YOUR_DOMAIN> 
+## Table of Contents
+
+1. [VPS and operating system selection](#1-vps-and-operating-system-selection)
+
 	1.1 [VPS Providers](#11-vps-providers)
-	1.2 [CPU architecture and type](#12-architecture-and-type-cpu)
-	1.3 [SSH keys and login](#13-key-ssh-i-login)
-2. [BIND9 installation and configuration](#2-installation-and-configuration-bind9)
-	2.1 [Package Installation](#21-install-packages)
-	2.2 [BIND9 file configuration](#22-config-files-bind9)
-3. [DNS zone creation](#3-create-dns-zone)
+
+	1.2 [CPU architecture and type](#12-CPU-architecture-and-type)
+
+	1.3 [SSH keys and login](#13-ssh-keys-and-login)
+
+2. [BIND9 installation and configuration](#2-bind9-installation-and-configuration)
+
+	2.1 [Package Installation](#21-package-installation)
+
+	2.2 [BIND9 file configuration](#22-bind9-file-configuration)
+
+3. [Create DNS zone](#3-create-dns-zone)
+
 	3.1 [File named.conf.local](#31-file-namedconflocal)
-	3.2 [Zone file db.<YOUR_DOMAIN>](#32-file-zone-dbnoinputdev)
+
+	3.2 [Zone file db](#32-file-zone-db)
+
 4. [Domain Configuration in Porkbun](#4-domain-configuration-in-porkbun)
+
 	4.1 [Domain Registration](#41-register-domains)
+
 	4.2 [Glue Records](#42-glue-records)
+
 	4.3 [Nameservers](#43-nameservers)
+
 5. [Testing and Implementing DNSSEC](#5-testing-and-implementing-dnssec)
+
 	5.1 [Generating KSK and ZSK keys](#51-generate-key)
+
 	5.2 [Zone Signing and RRSIG Generation](#52-signing-zone)
+
 	5.3 [Reconfiguring BIND9 under DNSSEC](#53-bind-i-dnssec)
+
 	5.4 [Entering DS record in Porkbun](#54-record-ds-w-porkbun)
+
 6. [Installing a mail server](#6-install-mail-server)
+
 	6.1 [Postfix-installation and configuration](#61-postfix-installation)
+
 	6.2 [Creating Maildir Directories](#62-maildir)
+
 	6.3 [Dovecot installation](#63-installation-dovecot)
+
 7. [Testing, Security, and Tools](#7-testing-security-and-tools)
+
 	7.1 [Email and IMAP performance tests](#71-tests-mail)
+
 	7.2 [SPF Diagnostics, DKIM, DMARC](#72-diagnostics-spf-dkim-dmarc)
+
 	7.3 [TLS, certificates, Apple Mail](#73-tls-apple-mail)
+
 	7.4 [Typical Problems and Troubleshooting](#74-problems-and-troubleshooting)
+
 	7.5 [Backup and monitoring](#75-backup-i-monitoring)
+
 	7.6 [Send by relayhost (Gmail/SendGrid)](#76-send-by-relayhost)
+
 	7.7 [Errors and Solutions](#77-errors-and-solutions)
+
 	7.8 [Mail client settings](#78-settings-customers-email)
+
 8. [Project Status and Next Steps](#8-project-status-and-next-steps)
+
 	8.1 [What Works](#81-what-works)
+
 	8.2 [What's Next](#82-what's Next)
+
 9. [Website with WordPress](#9-website-with-wordpress)
+
 	9.1 [Apache installation and VirtualHost configuration](#91-install-apache)
+
 	9.2 [Let's Encrypt SSL Certificate Installation](#92-install-ssl)
+
 	9.3 [WordPress installation and database](#93-wordpress-i-mariadb)
+
 	9.4 [Themes & Plugins - Portfolio & Resume](#94-motifs-and-plugins)
+
 	9.5 [WordPress security](#95-security-wordpress)
+
 
 
 --
@@ -76,14 +117,16 @@ At the stage of creating a VPS instance:
 * The first login was through:
 
 ```bash
-ssh root@<YOUR_IP> ```
+ssh root@<YOUR_IP> 
+```
 
 * A new user '<your_USER>' was created, added to the 'sudo' group, and the public key was copied to it:
 
 ```bash
 adduser <your_USER>
 usermod -aG sudo <your_USER>
-rsync --archive --chown=<your_USER>:<your_USER> ~/.ssh /home/<your_USER> ```
+rsync --archive --chown=<your_USER>:<your_USER> ~/.ssh /home/<your_USER> 
+```
 
 
 --
@@ -91,15 +134,16 @@ rsync --archive --chown=<your_USER>:<your_USER> ~/.ssh /home/<your_USER> ```
 
 ## 2 BIND9 installation and configuration
 
-### 2.1
+### 2.1 Package installation
 
 Installing packages
 
 ```bash
-sudo apt update && sudo apt install bind9 bind9utils bind9-doc dnsutils -y ```'
+sudo apt update && sudo apt install bind9 bind9utils bind9-doc dnsutils -y 
+```
 
 
-###2.2 BIND9 file configuration:
+### 2.2 BIND9 file configuration:
 
 File: '/etc/bind/named.conf.options' 
 
@@ -118,9 +162,11 @@ options {
 
 --
 
-## 3. Create a DNS zone
+## 3. Create DNS zone
 
-### 3.1 File: '/etc/bind/named.conf.local' 
+### 3.1 File named.conf.local
+
+File: '/etc/bind/named.conf.local' 
 
 ```conf
 zone "<YOUR_DOMAIN>" {
@@ -131,7 +177,9 @@ zone "<YOUR_DOMAIN>" {
 ```
 
 
-### 3.2 File: '/etc/bind/zones/db.<YOUR_DOMAIN>'
+### 3.2 Zone file db
+
+File: '/etc/bind/zones/db.<YOUR_DOMAIN>'
 
 ```dns
 $TTL 86400
@@ -663,7 +711,8 @@ Also installed **Starter Templates** and imported a ready-made resume/portfolio 
 
 Added an entry to 'wp-config.php':
 
-```php define('DISALLOW_FILE_EDIT'', true);
+```
+php define('DISALLOW_FILE_EDIT'', true);
 ```
 
 File and directory permissions have been changed:
@@ -680,6 +729,3 @@ Example of manual backups:
 ```bash
 tar czf /root/backup/wordpress_$(date +%F).tar.gz /var/www/<YOUR_DOMAIN>
 ```
-
-
->>>>>>> e00a919 (My home lab project with configuration of DNS, Email and my own website)
