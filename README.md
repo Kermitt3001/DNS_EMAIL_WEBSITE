@@ -1,7 +1,7 @@
 <<<<<<< HEAD
 # DNS_EMAIL_WEBSITE
 =======
-# Project: Custom DNS Server on VPS with BIND9 for domain noinput.dev ## Table of
+# Project: Custom DNS Server on VPS with BIND9 for domain <YOUR_DOMAIN> ## Table of
 Contents
 
 1. [VPS and operating system selection](#1-select-vps-and-operating-system)
@@ -13,7 +13,7 @@ Contents
 	2.2 [BIND9 file configuration](#22-config-files-bind9)
 3. [DNS zone creation](#3-create-dns-zone)
 	3.1 [File named.conf.local](#31-file-namedconflocal)
-	3.2 [Zone file db.noinput.dev](#32-file-zone-dbnoinputdev)
+	3.2 [Zone file db.<YOUR_DOMAIN>](#32-file-zone-dbnoinputdev)
 4. [Domain Configuration in Porkbun](#4-domain-configuration-in-porkbun)
 	4.1 [Domain Registration](#41-register-domains)
 	4.2 [Glue Records](#42-glue-records)
@@ -124,34 +124,34 @@ options {
 ### 3.1 File: '/etc/bind/named.conf.local' 
 
 ```conf
-zone "noinput.dev" {
+zone "<YOUR_DOMAIN>" {
 	type master;
-	file "/etc/bind/zones/db.noinput.dev";
+	file "/etc/bind/zones/db.<YOUR_DOMAIN>";
 	allowtransfer { none; };
 };
 ```
 
 
-### 3.2 File: '/etc/bind/zones/db.noinput.dev'
+### 3.2 File: '/etc/bind/zones/db.<YOUR_DOMAIN>'
 
 ```dns
 $TTL 86400
-@   IN  SOA ns1.noinput.dev. admin.noinput.dev. (
+@   IN  SOA ns1.<YOUR_DOMAIN>. admin.<YOUR_DOMAIN>. (
             2024051501 ; Serial
             3600       ; Refresh
             1800       ; Retry
             1209600    ; Expire
             86400 )    ; Minimum TTL
 
-    IN  NS  ns1.noinput.dev.
-    IN  NS  ns2.noinput.dev.
+    IN  NS  ns1.<YOUR_DOMAIN>.
+    IN  NS  ns2.<YOUR_DOMAIN>.
 
 ns1 IN  A   <YOUR_IP>
 s2 IN  A   <YOUR_IP>
 @   IN  A   <YOUR_IP>
 www IN  A   <YOUR_IP>
 
-@     IN MX 10 mail.noinput.dev.
+@     IN MX 10 mail.<YOUR_DOMAIN>.
 mail  IN A   <YOUR_IP>
 
 @     IN TXT "v=spf1 a mx <YOUR_IP> -all"
@@ -183,8 +183,8 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:postmaster@<YOUR_DOMAIN>"
 Changing domain nameservers:
 
 ```
-ns1.noinput.dev
-ns2.noinput.dev 
+ns1.<YOUR_DOMAIN>
+ns2.<YOUR_DOMAIN> 
 ```
 
 --
@@ -214,9 +214,9 @@ sudo dnssec-signzone -A -3 $(head -c 1000 /dev/urandom | sha1sum | cut -c1-16) \
 In the 'named.conf.local' file:
 
 ```bash
-zone "noinput.dev" {
+zone "<YOUR_DOMAIN>" {
     type master;
-    file "/etc/bind/zones/db.noinput.dev.signed";
+    file "/etc/bind/zones/db.<YOUR_DOMAIN>.signed";
     allow-transfer { none; };
 };
 ```
@@ -292,7 +292,7 @@ sudo chown -R [USER]:[USER] /home/[USER]/Maildir
 
 * Shipping Test:
 
-```bash
+```bash
 echo "Test mail"| mail -s "Test message" [USER] sudo ls -l
 /home/[USER]/Maildir/new
 ```
@@ -317,7 +317,7 @@ openssl s_client -connect mail.<YOUR_DOMAIN>:993
 
 * SPF check:
 ```bash
-dig TXT noinput.dev +short
+dig TXT <YOUR_DOMAIN> +short
 # Or https://mxtoolbox.com/spf.aspx
 ```
 
@@ -326,7 +326,7 @@ dig TXT noinput.dev +short
 sudo apt install opendkim opendkim-tools
 ```
 
-* DKIM keys: '/etc/opendkim/keys/noinput.dev/'
+* DKIM keys: '/etc/opendkim/keys/<YOUR_DOMAIN>/'
 
 * Sample TXT record:
 ```
@@ -334,9 +334,9 @@ selector201._domainkey IN TXT ("v=DKIM1; k=rsa; p=[PUBLIC_KEY]"; t=s; s=email) '
 
 * DMARC:
 ```
-_dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@noinput.dev" 
+_dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@<YOUR_DOMAIN>" 
 ```
-
+--
 
 ### 7.3 TLS, certificates, Apple Mail
 
@@ -344,14 +344,14 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@noinput.dev"
 
   ```bash
   sudo apt install certbot
-  sudo certbot certonly --standalone -d mail.noinput.dev 
+  sudo certbot certonly --standalone -d mail.<YOUR_DOMAIN> 
   ```
 
 * Dovecot configuration with full chain:
 
   ```conf
   ssl_cert= </etc/letsencrypt/live/mail.<YOUR_DOMAIN>/fullchain.pem
-  ssl_key = </etc/letsencrypt/live/mail.noinput.dev/privkey.pem
+  ssl_key = </etc/letsencrypt/live/mail.<YOUR_DOMAIN>/privkey.pem
   ```
 
 * Certificate test:
@@ -568,7 +568,7 @@ www-data:www-data /var/www/<YOUR_DOMAIN>
 Site configuration file:
 
 
-Then a directory '/var/www/noinput.dev' and a test file 'index.html' were created. A configuration file '/etc/apache2/sitesavailable/noinput.dev.conf' was created:
+Then a directory '/var/www/<YOUR_DOMAIN>' and a test file 'index.html' were created. A configuration file '/etc/apache2/sitesavailable/<YOUR_DOMAIN>.conf' was created:
 
 
 ```apache
@@ -582,7 +582,7 @@ Then a directory '/var/www/noinput.dev' and a test file 'index.html' were create
 ```
 
 
-Enabled the configuration with the command 'sudo a2ensite noinput.dev.conf' and reloaded the server with 'sudo systemctl reload
+Enabled the configuration with the command 'sudo a2ensite <YOUR_DOMAIN>.conf' and reloaded the server with 'sudo systemctl reload
 apache2'.
 
 
@@ -636,7 +636,7 @@ WordPress was downloaded and unpacked:
 /tmp
 curl -O https://wordpress.org/latest.zip unzip
 latest.zip
-sudo mv wordpress/* /var/www/noinput.dev/
+sudo mv wordpress/* /var/www/<YOUR_DOMAIN>/
 ```
 
 
@@ -668,8 +668,8 @@ Added an entry to 'wp-config.php':
 File and directory permissions have been changed:
 
 ```bash
-sudo find /var/www/noinput.dev -type d -exec chmod 755 {} \;
-sudo find /var/www/noinput.dev -type f -exec chmod 644 {} \;
+sudo find /var/www/<YOUR_DOMAIN> -type d -exec chmod 755 {} \;
+sudo find /var/www/<YOUR_DOMAIN> -type f -exec chmod 644 {} \;
 ```
 
 A security plugin has been installed, and 'fail2ban' has been enabled at the server level and access to 'wp-login.php' has been
@@ -677,7 +677,7 @@ restricted by security plugins. Added automatic backups and tests of certificate
 
 Example of manual backups:
 ```bash
-tar czf /root/backup/wordpress_$(date +%F).tar.gz /var/www/noinput.dev
+tar czf /root/backup/wordpress_$(date +%F).tar.gz /var/www/<YOUR_DOMAIN>
 ```
 
 
