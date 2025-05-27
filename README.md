@@ -232,7 +232,7 @@ zone "noinput.dev" {
 
 ## 6. installation of mail server
 
-### 6.1 Postfix - installation and configuration
+### 6.1 Postfix - installation and configuration
 
 ```bash
 sudo apt install postfix 
