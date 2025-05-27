@@ -5,9 +5,9 @@
 Contents
 
 1. [VPS and operating system selection](#1-select-vps-and-operating-system)
-	1.1 [VPS Providers](#11-vps-providers).
+	1.1 [VPS Providers](#11-vps-providers)
 	1.2 [CPU architecture and type](#12-architecture-and-type-cpu)
-	1.3 [SSH keys and login](#13-key-ssh-i-login).
+	1.3 [SSH keys and login](#13-key-ssh-i-login)
 2. [BIND9 installation and configuration](#2-installation-and-configuration-bind9)
 	2.1 [Package Installation](#21-install-packages)
 	2.2 [BIND9 file configuration](#22-config-files-bind9)
@@ -19,14 +19,14 @@ Contents
 	4.2 [Glue Records](#42-glue-records)
 	4.3 [Nameservers](#43-nameservers)
 5. [Testing and Implementing DNSSEC](#5-testing-and-implementing-dnssec)
-	5.1 [Generating KSK and ZSK keys](#51-generate-key).
+	5.1 [Generating KSK and ZSK keys](#51-generate-key)
 	5.2 [Zone Signing and RRSIG Generation](#52-signing-zone)
-	5.3 [Reconfiguring BIND9 under DNSSEC](#53-bind-i-dnssec).
+	5.3 [Reconfiguring BIND9 under DNSSEC](#53-bind-i-dnssec)
 	5.4 [Entering DS record in Porkbun](#54-record-ds-w-porkbun)
-6. [Installing a mail server](#6-install-mail-server).
+6. [Installing a mail server](#6-install-mail-server)
 	6.1 [Postfix-installation and configuration](#61-postfix-installation)
 	6.2 [Creating Maildir Directories](#62-maildir)
-	6.3 [Dovecot installation](#63-installation-dovecot).
+	6.3 [Dovecot installation](#63-installation-dovecot)
 7. [Testing, Security, and Tools](#7-testing-security-and-tools)
 	7.1 [Email and IMAP performance tests](#71-tests-mail)
 	7.2 [SPF Diagnostics, DKIM, DMARC](#72-diagnostics-spf-dkim-dmarc)
@@ -44,7 +44,7 @@ Contents
 	9.2 [Let's Encrypt SSL Certificate Installation](#92-install-ssl)
 	9.3 [WordPress installation and database](#93-wordpress-i-mariadb)
 	9.4 [Themes & Plugins - Portfolio & Resume](#94-motifs-and-plugins)
-	9.5 [WordPress security](#95-security-wordpress).
+	9.5 [WordPress security](#95-security-wordpress)
 
 
 --
@@ -542,7 +542,7 @@ Apple Mail connects to your server, and it forwards to SendGrid (relayhost).
 * Keeping documentation up to date
 * Tests: MXToolbox, intodns.com, SSL Labs
 
-## 9. Website with WordPress
+## 9. Website with WordPress
 
 ### 9.1 Installing Apache and configuring VirtualHost
 
@@ -595,7 +595,7 @@ apache2'.
 sudo apt install certbot python3-certbot-apache -y 
 ```
 
-Certificate configuration has been started:
+Certificate configuration has been started:
 
 ```bash
 sudo certbot --apache -d <YOUR_DOMAIN> -d www.<YOUR_DOMAIN>
@@ -652,7 +652,7 @@ define( 'DB_HOST', 'localhost' );
 ```
 ### 9.4 Themes and plugins - portfolio and resume
 
-The **Astra** theme and plugins were installed:
+The **Astra** theme and plugins were installed:
 * Elementor - page builder.
 * WPForms - contact forms.
 * UpdraftPlus - backups.
@@ -682,5 +682,5 @@ Example of manual backups:
 tar czf /root/backup/wordpress_$(date +%F).tar.gz /var/www/<YOUR_DOMAIN>
 ```
 
-
+
 >>>>>>> e00a919 (My home lab project with configuration of DNS, Email and my own website)
