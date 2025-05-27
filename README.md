@@ -61,16 +61,15 @@ A VPS from Hetzner with the following features was selected:
 * Operating system: Debian 12
 * Panel: none - manual configuration via terminal 
 
-### 1.2 CPU marchitecture and type
+### 1.2 CPU architecture and type
 
 
 A **Shared vCPU** VPS on **x86 (Intel/AMD)** architecture was chosen, which provides adequate power for the DNS server at low cost.
 
 
-### 1.3 SSH keys and login At the stage of
+### 1.3 SSH keys and login 
 
-
-creating a VPS instance:
+At the stage of creating a VPS instance:
 
 * SSH key pair generated (with 'ssh-keygen' command)
 * The public key has been added to the VPS instance
@@ -90,7 +89,7 @@ rsync --archive --chown=<your_USER>:<your_USER> ~/.ssh /home/<your_USER> ```
 --
 
 
-## 2 Installing and configuring BIND9 
+## 2 BIND9 installation and configuration
 
 ### 2.1
 
