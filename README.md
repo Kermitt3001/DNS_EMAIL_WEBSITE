@@ -171,7 +171,7 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:postmaster@<YOUR_DOMAIN>"
 
 ### 4.2 Glue Records
 
-
+
 | Hostname        | IP Address  |
 | --------------- | ----------- |
 | ns1.<YOUR_DOMAIN> | \<YOUR\_IP> |
@@ -191,7 +191,7 @@ ns2.<YOUR_DOMAIN>
 
 ## 5 Testing and implementing DNSSEC 
 
-### 5.1 mGenerating keys
+### 5.1 Generating keys
 
 ```bash
 cd /etc/bind/keys
@@ -217,7 +217,7 @@ In the 'named.conf.local' file:
 zone "<YOUR_DOMAIN>" {
     type master;
     file "/etc/bind/zones/db.<YOUR_DOMAIN>.signed";
-    allow-transfer { none; };
+    allow-transfer { none };
 };
 ```
 
@@ -389,7 +389,7 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@<YOUR_DOMAIN>"
 * Logs: 'journalctl -u postfix -n 50', 'journalctl -u dovecot -n 50'
 * External tests: [mxtoolbox.com](https://mxtoolbox.com), [intodns.com](https://intodns.com), [SSL Labs](https://www.ssllabs.com/ssltest/)
 
-## 7.6 Sending mail from VPS with blocked port 25 (relayhost, Gmail/SendGrid) 
+### 7.6 Sending mail from VPS with blocked port 25 (relayhost, Gmail/SendGrid) 
 
 #### Problem:
 
@@ -410,7 +410,7 @@ _dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc@<YOUR_DOMAIN>"
     em<YOUR_NUMBERS> IN CNAME <NO_SENDGRID>.wl005.sendgrid.net. 
     s1._domainkey IN CNAME s1.domainkey.<NO_SENDGRID>.wl005.sendgrid.net.
     s2._domainkey IN CNAME s2.domainkey.<NO_SENDGRID>.wl005.sendgrid.net.
-```
+    ```
 
 * Re-sign the zone if you have DNSSEC.
 * Do a BIND9 reload.
